@@ -1,15 +1,15 @@
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
-import {
-  RestExplorerBindings,
-  RestExplorerComponent,
-} from '@loopback/rest-explorer';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
+import {
+  RestExplorerBindings,
+  RestExplorerComponent
+} from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
+import dotEnvExtended from 'dotenv-extended';
 import path from 'path';
 import {MySequence} from './sequence';
-
 export {ApplicationConfig};
 
 export class CreaigithubApplication extends BootMixin(
@@ -18,6 +18,9 @@ export class CreaigithubApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
+
+dotEnvExtended.load({schema: '.env',
+errorOnMissing: true,});
     // Set up the custom sequence
     this.sequence(MySequence);
 

@@ -5,11 +5,11 @@ const config = {
   name: 'cre',
   connector: 'postgresql',
   url: '',
-  host: 'wellnessai.cc3echcrqjmr.us-east-1.rds.amazonaws.com',
+  host: process.env.DB_HOST,
   port: 5432,
-  user: 'welnessmaster',
-  password: '4AzM5q_FjE',
-  database: 'wellnessai'
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
 };
 
 // Observe application's life cycle to disconnect the datasource when
