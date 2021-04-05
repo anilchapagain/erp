@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  cre-api:
+      build:
+        context: .
+      ports:
+        - '9000:3000'
+      env_file:
+        - ./.env
