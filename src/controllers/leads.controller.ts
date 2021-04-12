@@ -2,19 +2,9 @@ import {
   repository
 } from '@loopback/repository';
 import {
-  del, get,
+  get,
   HttpErrors,
   param,
-
-
-
-
-
-
-
-
-
-
   response
 } from '@loopback/rest';
 import {LeadsRepository} from '../repositories';
@@ -95,8 +85,6 @@ export class LeadsController {
   })
   async find(
     @param.query.string('year') year?: string,
-    // @param.query.string('limit') limit?: number,
-    // @param.query.string('offset') offset?: number,
     @param.query.string('month') month?: string,
     @param.query.string('market') market?: string,
     @param.query.string('sub_market') sub_market?: string,
@@ -107,18 +95,20 @@ export class LeadsController {
       && market !== '' && market !== undefined
       && sub_market !== '' && sub_market !== undefined
       && sale_propensity !== '' && sale_propensity !== undefined
-      // && limit !== null && limit !== undefined
-      // && offset !== null && offset !== undefined
-
-
-    )
+      )
     {
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_sale_date) = ('${year}')
-      and extract (month from last_sale_date) = ('${month}')
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
+      and extract (month from last_update_date) = ('${month}')
       and market = '${market}'
       and submarket = '${sub_market}'
       and probability = '${sale_propensity}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
 
       `);
       // console.log(sql)
@@ -126,26 +116,80 @@ export class LeadsController {
         return sql
       }
       else return 'no data matched'
-
-
-
     }
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && sub_market !== '' && sub_market !== undefined
+      && sale_propensity !== '' && sale_propensity !== undefined
+    )
+    {
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      and extract (month from last_update_date) = '${month}'
+      and submarket = '${sub_market}'
+      and probability = '${sale_propensity}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
+
+
     else if (
       year !== '' && year !== undefined
       && month !== '' && month !== undefined
       && market !== '' && market !== undefined
       && sub_market !== '' && sub_market !== undefined
-      // && limit !== null && limit !== undefined
-      // && offset !== null && offset !== undefined
     )
     {
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_sale_date) = ('${year}')
-      and extract (month from last_sale_date) = ('${month}')
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
+      and extract (month from last_update_date) = ('${month}')
       and market = '${market}'
       and submarket = '${sub_market}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
 
 
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
+
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && market !== '' && market !== undefined
+      && sale_propensity !== '' && sale_propensity !== undefined
+    )
+    {
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      and extract (month from last_update_date) = '${month}'
+      and market = '${market}'
+      and probability = '${sale_propensity}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
       `);
       // console.log(sql)
       if (sql.length > 0) {
@@ -159,9 +203,15 @@ export class LeadsController {
     )
     {
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_sale_date) = ('${year}')
-      and extract (month from last_sale_date) = ('${month}')
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
+      and extract (month from last_update_date) = ('${month}')
       and market = '${market}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
       `);
       // console.log(sql)
       if (sql.length > 0) {
@@ -169,20 +219,83 @@ export class LeadsController {
       }
       else return 'no data matched'
     }
-
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && sub_market !== '' && sub_market !== undefined
+    )
+    {
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      and extract (month from last_update_date) = '${month}'
+      and submarket = '${sub_market}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && sale_propensity !== '' && sale_propensity !== undefined
+    )
+    {
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      and extract (month from last_update_date) = '${month}'
+      and probability = '${sale_propensity}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
     else if (
       year !== '' && year !== undefined
       && month !== '' && month !== undefined
     )
     {
+      const sql1 = `select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      and extract (month from last_update_date) = '${month}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
+      limit 1000`;
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_sale_date) = '${year}'
-      and extract (month from last_sale_date) = '${month}'
+      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      and extract (month from last_update_date) = '${month}'
+      order by case probability
+      when 'High' then 1
+      when 'Medium' then 2
+      when 'Low' then 3
+      when 'Not for Sale' then 4
+      end
+      limit 1000
       `);
-      // console.log(sql)
-      return sql
+      console.log(sql1)
+      if (sql.length > 0) {
+        return sql
       }
-
+      else return 'no data matched'
+    }
       else if (Error()) {
         throw new HttpErrors.InternalServerError();
       }
@@ -232,13 +345,7 @@ export class LeadsController {
 
 
 
-  @del('/leads/{id}')
-  @response(204, {
-    description: 'Leads DELETE success',
-  })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
-    await this.leadsRepository.deleteById(id);
-  }
+
 }
 
 
