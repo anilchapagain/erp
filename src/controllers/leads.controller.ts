@@ -97,12 +97,20 @@ export class LeadsController {
       && sale_propensity !== '' && sale_propensity !== undefined
       )
     {
+      const loca = sub_market.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
+      const pro = sale_propensity.split(',');
+      const proq = "'" + pro.join("','") + "'";
+
+
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
       and extract (month from last_update_date) = ('${month}')
-      and market = '${market}'
-      and submarket = '${sub_market}'
-      and probability = '${sale_propensity}'
+      and market in (${marq})
+      and submarket in (${locaq})
+      and probability in (${proq})
       order by case probability
       when 'High' then 1
       when 'Medium' then 2
@@ -124,11 +132,15 @@ export class LeadsController {
       && sale_propensity !== '' && sale_propensity !== undefined
     )
     {
+      const loca = sub_market.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+      const pro = sale_propensity.split(',');
+      const proq = "'" + pro.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
-      and submarket = '${sub_market}'
-      and probability = '${sale_propensity}'
+      and submarket in (${locaq})
+      and probability = '${proq}'
       order by case probability
       when 'High' then 1
       when 'Medium' then 2
@@ -151,11 +163,15 @@ export class LeadsController {
       && sub_market !== '' && sub_market !== undefined
     )
     {
+      const loca = sub_market.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
       and extract (month from last_update_date) = ('${month}')
-      and market = '${market}'
-      and submarket = '${sub_market}'
+      and market in (${marq})
+      and submarket in (${locaq})
       order by case probability
       when 'High' then 1
       when 'Medium' then 2
@@ -179,11 +195,15 @@ export class LeadsController {
       && sale_propensity !== '' && sale_propensity !== undefined
     )
     {
+      const loca = sale_propensity.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
-      and market = '${market}'
-      and probability = '${sale_propensity}'
+      and market in (${marq})
+      and probability in (${locaq})
       order by case probability
       when 'High' then 1
       when 'Medium' then 2
@@ -202,10 +222,12 @@ export class LeadsController {
       && market !== '' && market !== undefined
     )
     {
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
       and extract (month from last_update_date) = ('${month}')
-      and market = '${market}'
+      and market in (${marq})
       order by case probability
       when 'High' then 1
       when 'Medium' then 2
@@ -225,10 +247,12 @@ export class LeadsController {
       && sub_market !== '' && sub_market !== undefined
     )
     {
+      const loca = sub_market.split(',');
+      const locaq = "'" + loca.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
-      and submarket = '${sub_market}'
+      and submarket in (${locaq})
       order by case probability
       when 'High' then 1
       when 'Medium' then 2
@@ -248,10 +272,12 @@ export class LeadsController {
       && sale_propensity !== '' && sale_propensity !== undefined
     )
     {
+      const loca = sale_propensity.split(',');
+      const locaq = "'" + loca.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
-      and probability = '${sale_propensity}'
+      and probability in (${locaq})
       order by case probability
       when 'High' then 1
       when 'Medium' then 2
