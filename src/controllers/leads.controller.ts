@@ -56,12 +56,27 @@ export class LeadsController {
 
   })
   async findsubmarket(
+    @param.query.string('market') market?: string,
   ): Promise<any>{
-    const sql = this.leadsRepository.dataSource.execute(`
-    select distinct(submarket) from cre.tgt_lead_gen
+    if (
+      market !== '' && market !== undefined
+    ) {
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
+    const sql = await this.leadsRepository.dataSource.execute(`
+    select distinct(submarket) from cre.tgt_lead_gen where market in (${marq})
     `);
-    console.log(sql);
+    // console.log(sql);
     return sql
+    }
+    else if (market === '' || market === undefined) {
+      const sql = await this.leadsRepository.dataSource.execute(`select distinct(submarket) from cre.tgt_lead_gen`);
+      return sql
+    }
+    else if (Error()) {
+      throw new HttpErrors.InternalServerError();
+    }
+
   }
   @get('/probability')
   @response(200, {
@@ -69,12 +84,26 @@ export class LeadsController {
 
   })
   async findprobability(
-  ): Promise<any>{
-    const sql = this.leadsRepository.dataSource.execute(`
-    select distinct(probability) from cre.tgt_lead_gen
-    `);
-    console.log(sql);
-    return sql
+    @param.query.string('market') market?: string,
+    ): Promise<any>{
+      if (
+        market !== '' && market !== undefined
+      ) {
+        const mar = market.split(',');
+        const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select distinct(probability) from cre.tgt_lead_gen where market in (${marq})
+      `);
+      // console.log(sql);
+      return sql
+      }
+      else if (market === '' || market === undefined) {
+        const sql = await this.leadsRepository.dataSource.execute(`select distinct(probability) from cre.tgt_lead_gen`);
+        return sql
+      }
+      else if (Error()) {
+        throw new HttpErrors.InternalServerError();
+      }
   }
 
 
