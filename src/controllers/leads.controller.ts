@@ -333,7 +333,7 @@ export class LeadsController {
       when 'Low' then 3
       when 'Not for Sale' then 4
       end
-      limit 1000`;
+      limit 100`;
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
@@ -343,7 +343,7 @@ export class LeadsController {
       when 'Low' then 3
       when 'Not for Sale' then 4
       end
-      limit 1000
+      limit 100
       `);
       console.log(sql1)
       if (sql.length > 0) {
