@@ -141,10 +141,9 @@ export class LeadsController {
       and submarket in (${locaq})
       and probability in (${proq})
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
 
       `);
@@ -171,10 +170,9 @@ export class LeadsController {
       and submarket in (${locaq})
       and probability = '${proq}'
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
       `);
       // console.log(sql)
@@ -202,10 +200,9 @@ export class LeadsController {
       and market in (${marq})
       and submarket in (${locaq})
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
 
 
@@ -234,10 +231,9 @@ export class LeadsController {
       and market in (${marq})
       and probability in (${locaq})
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
       `);
       // console.log(sql)
@@ -258,10 +254,9 @@ export class LeadsController {
       and extract (month from last_update_date) = ('${month}')
       and market in (${marq})
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
       `);
       // console.log(sql)
@@ -283,10 +278,9 @@ export class LeadsController {
       and extract (month from last_update_date) = '${month}'
       and submarket in (${locaq})
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
       `);
       // console.log(sql)
@@ -308,10 +302,9 @@ export class LeadsController {
       and extract (month from last_update_date) = '${month}'
       and probability in (${locaq})
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
       `);
       // console.log(sql)
@@ -328,20 +321,18 @@ export class LeadsController {
       const sql1 = `select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
       limit 100`;
       const sql = await this.leadsRepository.dataSource.execute(`
       select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       order by case probability
-      when 'High' then 1
-      when 'Medium' then 2
-      when 'Low' then 3
-      when 'Not for Sale' then 4
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
       end
       limit 100
       `);
