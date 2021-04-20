@@ -389,7 +389,26 @@ export class LeadsController {
   //   await this.leadsRepository.updateById(id, leads);
   // }
 
+  @get('/charts')
+  @response(200, {
+    description: 'Array of Leads model instances',
 
+  })
+  async findbymarket(
+    @param.query.string('market') market?: string,
+  ): Promise<any> {
+    if (market !== '' && market !== undefined) {
+
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.execute(
+        `  select * from cre.tgt_properties_metrics where market in (${marq}) order by year_month desc
+        `
+      )
+      return sql
+    }
+    else return 'please select a market'
+  }
 
 
 }
