@@ -395,19 +395,26 @@ export class LeadsController {
 
   })
   async findbymarket(
+
     @param.query.string('market') market?: string,
+    @param.query.string('year') year?: string,
   ): Promise<any> {
-    if (market !== '' && market !== undefined) {
+    if (
+      year !== '' && year !== undefined
+      && market !== '' && market !== undefined
+      )
+    {
 
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `  select * from cre.tgt_properties_metrics where market in (${marq}) order by year_month desc
+        `select * from cre.tgt_properties_metrics where market in (${marq}) and
+         TO_TIMESTAMP(year_month, 'YYYY/MM/DD') > date ' ${year}' - INTERVAL '6 months' order by year_month desc
         `
       )
       return sql
     }
-    else return 'please select a market'
+    else return 'please select a market with date'
   }
 
 
