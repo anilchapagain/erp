@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({settings: { postgresql: { schema: 'cre', table: 'tgt_lead_gen'} }, })
 export class Leads extends Entity {
   @property({
     type: 'string',

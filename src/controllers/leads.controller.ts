@@ -3,8 +3,25 @@ import {
 } from '@loopback/repository';
 import {
   get,
+
+
+
   HttpErrors,
   param,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   response
 } from '@loopback/rest';
 import {LeadsRepository} from '../repositories';
@@ -15,26 +32,7 @@ export class LeadsController {
     public leadsRepository : LeadsRepository,
   ) {}
 
-  // @post('/leads')
-  // @response(200, {
-  //   description: 'Leads model instance',
-  //   content: {'application/json': {schema: getModelSchemaRef(Leads)}},
-  // })
-  // async create(
-  //   @requestBody({
-  //     content: {
-  //       'application/json': {
-  //         schema: getModelSchemaRef(Leads, {
-  //           title: 'NewLeads',
-  //           exclude: ['property_id'],
-  //         }),
-  //       },
-  //     },
-  //   })
-  //   leads: Omit<Leads, 'property_id'>,
-  // ): Promise<Leads> {
-  //   return this.leadsRepository.create(leads);
-  // }
+
 
 
   @get('/market')
