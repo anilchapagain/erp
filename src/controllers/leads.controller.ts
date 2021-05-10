@@ -29,10 +29,12 @@ import {LeadsRepository} from '../repositories';
 export class LeadsController {
   constructor(
     @repository(LeadsRepository)
-    public leadsRepository : LeadsRepository,
+    public leadsRepository: LeadsRepository,
+
+
   ) {}
 
-
+  DB_SCHEMA = process.env.DB_SCHEMA
 
 
   @get('/market')
@@ -43,7 +45,7 @@ export class LeadsController {
   async findmarket(
   ): Promise<any>{
     const sql = this.leadsRepository.dataSource.execute(`
-    select distinct(market) from cre.tgt_lead_gen
+    select distinct(market) from ${this.DB_SCHEMA}.tgt_lead_gen
     `);
     console.log(sql);
     return sql
@@ -62,13 +64,13 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
     const sql = await this.leadsRepository.dataSource.execute(`
-    select distinct(submarket) from cre.tgt_lead_gen where market in (${marq})
+    select distinct(submarket) from ${this.DB_SCHEMA}.tgt_lead_gen where market in (${marq})
     `);
     // console.log(sql);
     return sql
     }
     else if (market === '' || market === undefined) {
-      const sql = await this.leadsRepository.dataSource.execute(`select distinct(submarket) from cre.tgt_lead_gen`);
+      const sql = await this.leadsRepository.dataSource.execute(`select distinct(submarket) from ${this.DB_SCHEMA}.tgt_lead_gen`);
       return sql
     }
     else if (Error()) {
@@ -90,13 +92,13 @@ export class LeadsController {
         const mar = market.split(',');
         const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      select distinct(probability) from cre.tgt_lead_gen where market in (${marq})
+      select distinct(probability) from ${this.DB_SCHEMA}.tgt_lead_gen where market in (${marq})
       `);
       // console.log(sql);
       return sql
       }
       else if (market === '' || market === undefined) {
-        const sql = await this.leadsRepository.dataSource.execute(`select distinct(probability) from cre.tgt_lead_gen`);
+        const sql = await this.leadsRepository.dataSource.execute(`select distinct(probability) from ${this.DB_SCHEMA}.tgt_lead_gen`);
         return sql
       }
       else if (Error()) {
@@ -133,7 +135,7 @@ export class LeadsController {
 
 
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
       and extract (month from last_update_date) = ('${month}')
       and market in (${marq})
       and submarket in (${locaq})
@@ -163,7 +165,7 @@ export class LeadsController {
       const pro = sale_propensity.split(',');
       const proq = "'" + pro.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       and submarket in (${locaq})
       and probability = '${proq}'
@@ -193,7 +195,7 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
       and extract (month from last_update_date) = ('${month}')
       and market in (${marq})
       and submarket in (${locaq})
@@ -224,7 +226,7 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       and market in (${marq})
       and probability in (${locaq})
@@ -248,7 +250,7 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = ('${year}')
       and extract (month from last_update_date) = ('${month}')
       and market in (${marq})
       order by case probability
@@ -272,7 +274,7 @@ export class LeadsController {
       const loca = sub_market.split(',');
       const locaq = "'" + loca.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       and submarket in (${locaq})
       order by case probability
@@ -296,7 +298,7 @@ export class LeadsController {
       const loca = sale_propensity.split(',');
       const locaq = "'" + loca.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       and probability in (${locaq})
       order by case probability
@@ -316,7 +318,7 @@ export class LeadsController {
       && month !== '' && month !== undefined
     )
     {
-      const sql1 = `select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      const sql1 = `select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       order by case probability
       when 'Hot' then 1
@@ -325,7 +327,7 @@ export class LeadsController {
       end
       limit 100`;
       const sql = await this.leadsRepository.dataSource.execute(`
-      select * from cre.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
+      select * from ${this.DB_SCHEMA}.tgt_lead_gen where extract (YEAR FROM last_update_date) = '${year}'
       and extract (month from last_update_date) = '${month}'
       order by case probability
       when 'Hot' then 1
@@ -406,7 +408,7 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select * from cre.tgt_properties_metrics where market in (${marq}) and
+        `select * from ${this.DB_SCHEMA}.tgt_properties_metrics where market in (${marq}) and
          TO_TIMESTAMP(year_month, 'YYYY/MM/DD') > date ' ${year}' - INTERVAL '6 months' order by year_month desc
         `
       )
