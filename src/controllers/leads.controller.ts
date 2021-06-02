@@ -417,6 +417,104 @@ export class LeadsController {
     else return 'please select a market with date'
   }
 
+  @get('/buyers')
+  @response(200, {
+    description: 'Array of BUyers model instances',
+
+  })
+  async buyers(
+
+    @param.query.string('market') market?: string,
+  ): Promise<any> {
+    if (
+      market !== '' && market !== undefined
+      )
+    {
+
+      // const mar = market.split(',');
+      // const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.execute(
+        `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where market ='${market}'
+        `
+      )
+      return sql
+    }
+    else return 'please select a market '
+  }
+  @get('/buyersmarket')
+  @response(200, {
+    description: 'Array of BUyers model instances',
+
+  })
+  async buyersmarket(
+
+    // @param.query.string('market') market?: string,
+  ): Promise<any> {
+    // if (
+    //   market !== '' && market !== undefined
+    //   )
+    // {
+
+      // const mar = market.split(',');
+      // const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.execute(
+        `select distinct market from ${this.DB_SCHEMA}.tgt_buyers_metrics
+        `
+      )
+      return sql
+    // }
+    // else return 'please select a market '?
+  }
+
+
+  @get('/buyersproperty')
+  @response(200, {
+    description: 'Array of BUyers model instances',
+
+  })
+  async property(
+
+    // @param.query.string('market') market?: string,
+  ): Promise<any> {
+    // if (
+    //   market !== '' && market !== undefined
+    //   )
+    // {
+
+      // const mar = market.split(',');
+      // const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.execute(
+        `select distinct property_id from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation
+        `
+      )
+      return sql
+    // }
+    // else return 'please select a market '?
+  }
+  @get('/propertybuyers')
+  @response(200, {
+    description: 'Array of BUyers model instances',
+
+  })
+  async buyersp(
+
+    @param.query.string('property_id') property_id?: string,
+  ): Promise<any> {
+    if (
+      property_id !== '' && property_id !== undefined
+      )
+    {
+
+      const mar = property_id.split(',');
+      const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.execute(
+        `select * from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where property_id in (${marq})
+        `
+      )
+      return sql
+    }
+    else return 'please select a propertyid '
+  }
 
 }
 
