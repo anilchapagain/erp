@@ -404,13 +404,12 @@ export class LeadsController {
       && market !== '' && market !== undefined
       )
     {
-
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
         `select * from ${this.DB_SCHEMA}.tgt_properties_metrics where market in (${marq}) and
-         TO_TIMESTAMP(year_month, 'YYYY/MM/DD') > date ' ${year}' - INTERVAL '6 months' order by year_month desc
-        `
+        TO_TIMESTAMP(year_month, 'YYYY/MM/DD') > date ' ${year}' - INTERVAL '6 months' order by year_month desc
+       `
       )
       return sql
     }
@@ -484,7 +483,31 @@ export class LeadsController {
       // const mar = market.split(',');
       // const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select distinct property_id from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation
+        `select distinct property_name from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation
+        `
+      )
+      return sql
+    // }
+    // else return 'please select a market '?
+  }
+  @get('/buyerscity')
+  @response(200, {
+    description: 'Array of BUyers model instances',
+
+  })
+  async city(
+
+    // @param.query.string('market') market?: string,
+  ): Promise<any> {
+    // if (
+    //   market !== '' && market !== undefined
+    //   )
+    // {
+
+      // const mar = market.split(',');
+      // const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.execute(
+        `select distinct city from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation
         `
       )
       return sql
@@ -498,23 +521,68 @@ export class LeadsController {
   })
   async buyersp(
 
-    @param.query.string('property_id') property_id?: string,
+    @param.query.string('property_name') property_name?: string,
+    @param.query.string('property_city') property_city?: string,
   ): Promise<any> {
+    // const mar = property_name.split(',');
+    // const marq = "'" + mar.join("','") + "'";
+    // const city = property_city.split(',');
+    // const cityq = "'" + city.join("','") + "'";
     if (
-      property_id !== '' && property_id !== undefined
+      property_name !== '' && property_name !== undefined
+      && property_city !== '' && property_city !== undefined
       )
     {
 
-      const mar = property_id.split(',');
+      const mar = property_name.split(',');
       const marq = "'" + mar.join("','") + "'";
+      const city = property_city.split(',');
+      const cityq = "'" + city.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select * from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where property_id in (${marq})
+        `select * from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where property_name in (${marq}) and city in (${cityq})
         `
       )
       return sql
     }
-    else return 'please select a propertyid '
+    else if (
+      property_name !== '' && property_name !== undefined
+    )
+    {
+      const mar = property_name.split(',');
+    const marq = "'" + mar.join("','") + "'";
+    // const city = property_city.split(',');
+    // const cityq = "'" + city.join("','") + "'";
+      const sql = await this.leadsRepository.execute(
+        `select * from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where property_name in (${marq})
+        `
+      )
+      return sql
+
+      } else if (
+        property_city !== '' && property_city !== undefined
+      )
+    {
+    //   const mar = property_name.split(',');
+    // const marq = "'" + mar.join("','") + "'";
+    const city = property_city.split(',');
+    const cityq = "'" + city.join("','") + "'";
+        const sql = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where city in (${cityq})
+          `
+        )
+        return sql
+
+    }
+    else if (
+      property_name === '' || property_name === undefined
+      && property_city === '' || property_city === undefined
+    )
+    {
+      return 'please select Property Name or Property City'
+      }
+    else return 'please select some data '
   }
+
 
 }
 
