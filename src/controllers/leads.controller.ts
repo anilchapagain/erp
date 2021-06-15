@@ -430,10 +430,10 @@ export class LeadsController {
       )
     {
 
-      // const mar = market.split(',');
-      // const marq = "'" + mar.join("','") + "'";
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where market ='${market}'
+        `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where market in (${marq})
         `
       )
       return sql
