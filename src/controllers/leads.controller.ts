@@ -407,8 +407,10 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select * from ${this.DB_SCHEMA}.tgt_properties_metrics where market in (${marq}) and
-        TO_TIMESTAMP(year_month, 'YYYY/MM/DD') > date ' ${year}' - INTERVAL '6 months' order by year_month desc
+        `select * from  ${this.DB_SCHEMA}.tgt_properties_metrics where market in (${marq}) and
+        year_month between
+          TIMESTAMP '${year}' - INTERVAL '6 months'
+          and '${year}'
        `
       )
       return sql
@@ -473,22 +475,23 @@ export class LeadsController {
   })
   async property(
 
-    // @param.query.string('market') market?: string,
-  ): Promise<any> {
-    // if (
-    //   market !== '' && market !== undefined
-    //   )
-    // {
+    @param.query.string('city') city?: string,
+  ): Promise<any>
+  {
+    if (
+      city !== '' && city !== undefined
+      )
+    {
 
-      // const mar = market.split(',');
-      // const marq = "'" + mar.join("','") + "'";
+      const mar = city.split(',');
+      const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select distinct property_name from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation
+        `select distinct property_name from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where city in (${marq})
         `
       )
       return sql
-    // }
-    // else return 'please select a market '?
+    }
+    else return 'please select a city '
   }
   @get('/buyerscity')
   @response(200, {
@@ -497,22 +500,22 @@ export class LeadsController {
   })
   async city(
 
-    // @param.query.string('market') market?: string,
+    @param.query.string('market') market?: string,
   ): Promise<any> {
-    // if (
-    //   market !== '' && market !== undefined
-    //   )
-    // {
+    if (
+      market !== '' && market !== undefined
+      )
+    {
 
-      // const mar = market.split(',');
-      // const marq = "'" + mar.join("','") + "'";
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select distinct city from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation
+        `select distinct city from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where market in (${marq})
         `
       )
       return sql
-    // }
-    // else return 'please select a market '?
+    }
+    else return 'please select a market '
   }
   @get('/propertybuyers')
   @response(200, {
