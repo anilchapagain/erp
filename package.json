@@ -1,7 +1,7 @@
 {
-  "name": "creai",
+  "name": "creapi",
   "version": "0.0.1",
-  "description": "creai",
+  "description": "creapi",
   "keywords": [
     "loopback-application",
     "loopback"
