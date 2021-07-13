@@ -1,21 +1,13 @@
 import {
   Count,
   CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
+  Filter, repository,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Status} from '../models';
 import {StatusRepository} from '../repositories';
@@ -37,12 +29,13 @@ export class StatusController {
         'application/json': {
           schema: getModelSchemaRef(Status, {
             title: 'NewStatus',
-            
+            exclude:['id']
+
           }),
         },
       },
     })
-    status: Status,
+    status: Omit<Status,'id'>
   ): Promise<Status> {
     return this.statusRepository.create(status);
   }
@@ -95,7 +88,7 @@ export class StatusController {
     return this.statusRepository.updateAll(status, where);
   }
 
-  @get('/statuses/{id}')
+  @get('/statuses/{property_id}')
   @response(200, {
     description: 'Status model instance',
     content: {
@@ -104,11 +97,17 @@ export class StatusController {
       },
     },
   })
-  async findById(
-    @param.path.string('id') id: string,
-    @param.filter(Status, {exclude: 'where'}) filter?: FilterExcludingWhere<Status>
-  ): Promise<Status> {
-    return this.statusRepository.findById(id, filter);
+  async findBy(
+    @param.path.string('property_id') property_id: string,
+
+
+  ): Promise<any> {
+    const sql = await this.statusRepository.execute(
+      `select * from ${process.env.DB_SCHEMA}.tgt_lead_status where property_id = '${property_id}' order by inserted_date DESC
+      `
+    )
+    return sql;
+
   }
 
   @patch('/statuses/{id}')

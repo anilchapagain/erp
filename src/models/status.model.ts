@@ -5,8 +5,11 @@ export class Status extends Entity {
   @property({
     type: 'string',
     id: true,
-    generated: false,
-    required: true,
+    generated: true,
+  })
+  id?: string;
+  @property({
+    type: 'string'
   })
   property_id: string;
 
