@@ -3,25 +3,8 @@ import {
 } from '@loopback/repository';
 import {
   get,
-
-
-
   HttpErrors,
   param,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   response
 } from '@loopback/rest';
 import {LeadsRepository} from '../repositories';
@@ -29,9 +12,7 @@ import {LeadsRepository} from '../repositories';
 export class LeadsController {
   constructor(
     @repository(LeadsRepository)
-    public leadsRepository: LeadsRepository,
-
-
+    public leadsRepository: LeadsRepository
   ) {}
 
   DB_SCHEMA = process.env.DB_SCHEMA
@@ -45,7 +26,7 @@ export class LeadsController {
   async findmarket(
   ): Promise<any>{
     const sql = this.leadsRepository.dataSource.execute(`
-    select distinct(market) from ${this.DB_SCHEMA}.tgt_lead_gen
+    select distinct(market) from ${this.DB_SCHEMA}.tgt_lead_gen order by market asc
     `);
     console.log(sql);
     return sql
@@ -64,7 +45,7 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
     const sql = await this.leadsRepository.dataSource.execute(`
-    select distinct(submarket) from ${this.DB_SCHEMA}.tgt_lead_gen where market in (${marq})
+    select distinct(submarket) from ${this.DB_SCHEMA}.tgt_lead_gen where market in (${marq}) order by submarket asc
     `);
     // console.log(sql);
     return sql
@@ -355,39 +336,6 @@ export class LeadsController {
 
 
 
-  // @get('/leads/{id}')
-  // @response(200, {
-  //   description: 'Leads model instance',
-  //   content: {
-  //     'application/json': {
-  //       schema: getModelSchemaRef(Leads, {includeRelations: true}),
-  //     },
-  //   },
-  // })
-  // async findById(
-  //   @param.path.string('id') id: string,
-  //   @param.filter(Leads, {exclude: 'where'}) filter?: FilterExcludingWhere<Leads>
-  // ): Promise<Leads> {
-  //   return this.leadsRepository.findById(id, filter);
-  // }
-
-  // @patch('/leads/{id}')
-  // @response(204, {
-  //   description: 'Leads PATCH success',
-  // })
-  // async updateById(
-  //   @param.path.string('id') id: string,
-  //   @requestBody({
-  //     content: {
-  //       'application/json': {
-  //         schema: getModelSchemaRef(Leads, {partial: true}),
-  //       },
-  //     },
-  //   })
-  //   leads: Leads,
-  // ): Promise<void> {
-  //   await this.leadsRepository.updateById(id, leads);
-  // }
 
   @get('/charts')
   @response(200, {
@@ -459,7 +407,7 @@ export class LeadsController {
       // const mar = market.split(',');
       // const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select distinct market from ${this.DB_SCHEMA}.tgt_buyers_metrics
+        `select distinct market from ${this.DB_SCHEMA}.tgt_buyers_metrics order by market asc
         `
       )
       return sql
@@ -486,7 +434,7 @@ export class LeadsController {
       const mar = city.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select distinct property_name from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where city in (${marq})
+        `select distinct property_name from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where city in (${marq}) order by property_name asc
         `
       )
       return sql
@@ -510,7 +458,7 @@ export class LeadsController {
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select distinct city from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where market in (${marq})
+        `select distinct city from ${this.DB_SCHEMA}.tgt_lead_buyers_recommendation where market in (${marq}) order by city asc
         `
       )
       return sql
