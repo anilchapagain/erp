@@ -409,8 +409,8 @@ export class LeadsController {
       const sql = await this.leadsRepository.execute(
         `select * from  ${this.DB_SCHEMA}.tgt_properties_metrics where market in (${marq}) and
         year_month between
-          TIMESTAMP '${year}' - INTERVAL '5 months'
-          and '${year}'
+          TIMESTAMP '${year}' - INTERVAL '6 months'
+          and  TIMESTAMP '${year}' - INTERVAL '1 month'
        `
       )
       return sql
