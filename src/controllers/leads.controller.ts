@@ -87,7 +87,17 @@ export class LeadsController {
       }
   }
 
+  @get('/leads/date')
+  @response(200, {
+    description: 'Array of Leads model instances',
 
+  })
+  async date(): Promise<any> {
+    const sql = await this.leadsRepository.dataSource.execute(`
+    select distinct (last_update_date) at time zone 'UTC-6' from ${this.DB_SCHEMA}.tgt_lead_gen
+      `);
+    return sql;
+    }
   @get('/leads')
   @response(200, {
     description: 'Array of Leads model instances',
