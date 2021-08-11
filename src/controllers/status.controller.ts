@@ -155,7 +155,7 @@ export class StatusController {
   ): Promise<any>{
     const sql = this.statusRepository.dataSource.execute(`
 
-    select distinct status,sum(tlg.property_current_rent) from (
+    select distinct status,count(distinct tt.property_id),sum(tlg.property_current_rent) from (
       select tls.*, row_number() over(partition by tls.property_id order by tls.inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status tls
    ) tt, ${this.DB_SCHEMA}.tgt_lead_gen tlg
    where
