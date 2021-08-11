@@ -17,7 +17,7 @@ export class StatusController {
     @repository(StatusRepository)
     public statusRepository : StatusRepository,
   ) {}
-
+  DB_SCHEMA = process.env.DB_SCHEMA
   @post('/statuses')
   @response(200, {
     description: 'Status model instance',
@@ -145,5 +145,23 @@ export class StatusController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.statusRepository.deleteById(id);
+  }
+  @get('/status/report')
+  @response(200, {
+    description: 'Array of Leads model instances',
+
+  })
+  async findreport(
+  ): Promise<any>{
+    const sql = this.statusRepository.dataSource.execute(`
+
+    select distinct status,sum(tlg.property_current_rent) from (
+      select tls.*, row_number() over(partition by tls.property_id order by tls.inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status tls
+   ) tt, ${this.DB_SCHEMA}.tgt_lead_gen tlg
+   where
+   rn = 1 and tt.property_id = tlg.property_id group by tt.status
+    `);
+    console.log(sql);
+    return sql
   }
 }
