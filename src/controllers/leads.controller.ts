@@ -127,7 +127,8 @@ export class LeadsController {
 
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-      left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
       select * from alldata
       where alldata.status not in ('notinterested')
       and  extract (YEAR FROM alldata.last_update_date) = ('${year}')
@@ -162,7 +163,8 @@ export class LeadsController {
       const proq = "'" + pro.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
         select * from alldata
       where alldata.status not in ('notinterested')
       and  extract (YEAR FROM alldata.last_update_date) = '${year}'
@@ -197,7 +199,8 @@ export class LeadsController {
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-      left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
       select * from alldata
       where alldata.status not in ('notinterested')
       and extract (YEAR FROM alldata.last_update_date) = ('${year}')
@@ -233,7 +236,8 @@ export class LeadsController {
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-      left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
       select * from alldata
       where alldata.status not in ('notinterested')
       and extract (YEAR FROM alldata.last_update_date) = '${year}'
@@ -262,7 +266,8 @@ export class LeadsController {
       const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
         select * from alldata
       where alldata.status not in ('notinterested')
       and extract (YEAR FROM alldata.last_update_date) = ('${year}')
@@ -291,7 +296,8 @@ export class LeadsController {
       const locaq = "'" + loca.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-      left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
       select * from alldata
       where alldata.status not in ('notinterested')
         and extract (YEAR FROM alldata.last_update_date) = '${year}'
@@ -320,7 +326,8 @@ export class LeadsController {
       const locaq = "'" + loca.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-      left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
       select * from alldata
       where alldata.status not in ('notinterested')
       and extract (YEAR FROM alldata.last_update_date) = '${year}'
@@ -358,7 +365,8 @@ export class LeadsController {
       // limit 100`;
       const sql = await this.leadsRepository.dataSource.execute(`
       with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  ${this.DB_SCHEMA}.tgt_lead_status tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested'))
+        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
+        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
         select * from alldata
       where alldata.status not in ('notinterested')
       and  extract (YEAR FROM alldata.last_update_date) = '${year}'
