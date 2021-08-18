@@ -170,7 +170,7 @@ export class LeadsController {
     )
 
     {
-      console.log('year month salepropensity,sub,status');
+      console.log('year month submarket sale status');
 
       const loca = sub_market.split(',');
       const locaq = "'" + loca.join("','") + "'";
@@ -204,6 +204,51 @@ export class LeadsController {
       else return 'no data matched'
     }
 
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && market !== '' && market !== undefined
+      && sub_market !== '' && sub_market !== undefined
+      && sale_propensity !== '' && sale_propensity !== undefined
+    )
+    {
+      console.log('year month  market sunmarket salepropensity');
+
+      const loca = sub_market.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
+      // const statu = status.split(',');
+      // const statuq = "'" + statu.join("','") + "'";
+      const pro = sale_propensity.split(',');
+      const proq = "'" + pro.join("','") + "'";
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+       extract (YEAR FROM tlg.last_update_date) = ('${year}')
+      and extract (month from tlg.last_update_date) = ('${month}')
+      and tlg.market in (${marq})
+      and tlg.submarket in (${locaq})
+      and tlg.probability in (${proq})
+      order by case tlg.probability
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
+      end
+
+
+
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
 
     else if (
       year !== '' && year !== undefined
@@ -213,7 +258,7 @@ export class LeadsController {
       && status !== '' && status !== undefined
     )
     {
-      console.log('year month sub, market, status');
+      console.log('year month  market submarket status');
 
       const loca = sub_market.split(',');
       const locaq = "'" + loca.join("','") + "'";
@@ -257,7 +302,7 @@ export class LeadsController {
       && status !== '' && status !== undefined
     )
     {
-      console.log('year month salepropensity market status');
+      console.log('year month  market salepropensity status');
 
       const loca = sale_propensity.split(',');
       const locaq = "'" + loca.join("','") + "'";
@@ -278,6 +323,82 @@ export class LeadsController {
       and tlg.market in (${marq})
       and tlg.probability in (${locaq})
       and tls.status in (${statuq})
+      order by case tlg.probability
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
+      end
+
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && market !== '' && market !== undefined
+      && sale_propensity !== '' && sale_propensity !== undefined
+
+    )
+    {
+      console.log('year month  market sale propen');
+
+      const loca = sale_propensity.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+
+      extract (YEAR FROM tlg.last_update_date) = '${year}'
+      and extract (month from tlg.last_update_date) = '${month}'
+      and tlg.market in (${marq})
+      and tlg.probability in (${locaq})
+      order by case tlg.probability
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
+      end
+
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
+    else if (year !== '' && year !== undefined
+    && month !== '' && month !== undefined
+      && market !== '' && market !== undefined
+      && sub_market !== '' && sub_market !== undefined
+    )
+    {
+      console.log('year month market submarket');
+
+      const mar = market.split(',');
+      const marq = "'" + mar.join("','") + "'";
+      const statu = sub_market.split(',');
+      const statuq = "'" + statu.join("','") + "'";
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+
+       extract (YEAR FROM tlg.last_update_date) = ('${year}')
+      and extract (month from tlg.last_update_date) = ('${month}')
+      and tlg.market in (${marq})
+      and tlg.submarket in (${statuq})
       order by case tlg.probability
       when 'Hot' then 1
       when 'Warm' then 2
