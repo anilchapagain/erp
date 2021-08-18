@@ -109,39 +109,50 @@ export class LeadsController {
     @param.query.string('market') market?: string,
     @param.query.string('sub_market') sub_market?: string,
     @param.query.string('sale_propensity') sale_propensity?: string,
+    @param.query.string('status') status?: string,
   ): Promise<any> {
     if (year !== '' && year !== undefined
       && month !== '' && month !== undefined
       && market !== '' && market !== undefined
       && sub_market !== '' && sub_market !== undefined
       && sale_propensity !== '' && sale_propensity !== undefined
+      && status !== '' && status !== undefined
+
       )
     {
+      console.log('all');
+
       const loca = sub_market.split(',');
       const locaq = "'" + loca.join("','") + "'";
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
       const pro = sale_propensity.split(',');
       const proq = "'" + pro.join("','") + "'";
+      const statu = status.split(',');
+      const statuq = "'" + statu.join("','") + "'";
 
 
       const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-      select * from alldata
-      where alldata.status not in ('notinterested')
-      and  extract (YEAR FROM alldata.last_update_date) = ('${year}')
-      and extract (month from alldata.last_update_date) = ('${month}')
-      and alldata.market in (${marq})
-      and alldata.submarket in (${locaq})
-      and alldata.probability in (${proq})
-      order by case alldata.probability
+
+
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+      extract (YEAR FROM tlg.last_update_date) = ('${year}')
+      and extract (month from tlg.last_update_date) = ('${month}')
+      and tlg.market in (${marq})
+      and tlg.submarket in (${locaq})
+      and tlg.probability in (${proq})
+      and tls.status in (${statuq})
+      order by case tlg.probability
       when 'Hot' then 1
       when 'Warm' then 2
       when 'Cold' then 3
       end
-      limit 100
+
 
       `);
       // console.log(sql)
@@ -155,28 +166,36 @@ export class LeadsController {
       && month !== '' && month !== undefined
       && sub_market !== '' && sub_market !== undefined
       && sale_propensity !== '' && sale_propensity !== undefined
+      && status !== '' && status !== undefined
     )
+
     {
+      console.log('year month salepropensity,sub,status');
+
       const loca = sub_market.split(',');
       const locaq = "'" + loca.join("','") + "'";
       const pro = sale_propensity.split(',');
       const proq = "'" + pro.join("','") + "'";
+      const statu = status.split(',');
+      const statuq = "'" + statu.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-        select * from alldata
-      where alldata.status not in ('notinterested')
-      and  extract (YEAR FROM alldata.last_update_date) = '${year}'
-      and extract (month from alldata.last_update_date) = '${month}'
-      and alldata.submarket in (${locaq})
-      and alldata.probability = '${proq}'
-      order by case alldata.probability
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+       extract (YEAR FROM tlg.last_update_date) = '${year}'
+      and extract (month from tlg.last_update_date) = '${month}'
+      and tlg.submarket in (${locaq})
+      and tlg.probability = '${proq}'
+      and tls.status in (${statuq})
+      order by case tlg.probability
       when 'Hot' then 1
       when 'Warm' then 2
       when 'Cold' then 3
       end
-      limit 100
+
       `);
       // console.log(sql)
       if (sql.length > 0) {
@@ -191,28 +210,35 @@ export class LeadsController {
       && month !== '' && month !== undefined
       && market !== '' && market !== undefined
       && sub_market !== '' && sub_market !== undefined
+      && status !== '' && status !== undefined
     )
     {
+      console.log('year month sub, market, status');
+
       const loca = sub_market.split(',');
       const locaq = "'" + loca.join("','") + "'";
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
+      const statu = status.split(',');
+      const statuq = "'" + statu.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-      select * from alldata
-      where alldata.status not in ('notinterested')
-      and extract (YEAR FROM alldata.last_update_date) = ('${year}')
-      and extract (month from alldata.last_update_date) = ('${month}')
-      and alldata.market in (${marq})
-      and alldata.submarket in (${locaq})
-      order by case alldata.probability
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+       extract (YEAR FROM tlg.last_update_date) = ('${year}')
+      and extract (month from tlg.last_update_date) = ('${month}')
+      and tlg.market in (${marq})
+      and tlg.submarket in (${locaq})
+      and tls.status in (${statuq})
+      order by case tlg.probability
       when 'Hot' then 1
       when 'Warm' then 2
       when 'Cold' then 3
       end
-      limit 100
+
 
 
       `);
@@ -228,28 +254,36 @@ export class LeadsController {
       && month !== '' && month !== undefined
       && market !== '' && market !== undefined
       && sale_propensity !== '' && sale_propensity !== undefined
+      && status !== '' && status !== undefined
     )
     {
+      console.log('year month salepropensity market status');
+
       const loca = sale_propensity.split(',');
       const locaq = "'" + loca.join("','") + "'";
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
+      const statu = status.split(',');
+      const statuq = "'" + statu.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-      select * from alldata
-      where alldata.status not in ('notinterested')
-      and extract (YEAR FROM alldata.last_update_date) = '${year}'
-      and extract (month from alldata.last_update_date) = '${month}'
-      and alldata.market in (${marq})
-      and alldata.probability in (${locaq})
-      order by case alldata.probability
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+
+      extract (YEAR FROM tlg.last_update_date) = '${year}'
+      and extract (month from tlg.last_update_date) = '${month}'
+      and tlg.market in (${marq})
+      and tlg.probability in (${locaq})
+      and tls.status in (${statuq})
+      order by case tlg.probability
       when 'Hot' then 1
       when 'Warm' then 2
       when 'Cold' then 3
       end
-      limit 100
+
       `);
       // console.log(sql)
       if (sql.length > 0) {
@@ -260,25 +294,33 @@ export class LeadsController {
     else if (year !== '' && year !== undefined
     && month !== '' && month !== undefined
       && market !== '' && market !== undefined
+      && status !== '' && status !== undefined
     )
     {
+      console.log('year month market status');
+
       const mar = market.split(',');
       const marq = "'" + mar.join("','") + "'";
+      const statu = status.split(',');
+      const statuq = "'" + statu.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-        select * from alldata
-      where alldata.status not in ('notinterested')
-      and extract (YEAR FROM alldata.last_update_date) = ('${year}')
-      and extract (month from alldata.last_update_date) = ('${month}')
-      and alldata.market in (${marq})
-      order by case alldata.probability
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+
+       extract (YEAR FROM tlg.last_update_date) = ('${year}')
+      and extract (month from tlg.last_update_date) = ('${month}')
+      and tlg.market in (${marq})
+      and tls.status in (${statuq})
+      order by case tlg.probability
       when 'Hot' then 1
       when 'Warm' then 2
       when 'Cold' then 3
       end
-      limit 100
+
       `);
       // console.log(sql)
       if (sql.length > 0) {
@@ -286,59 +328,38 @@ export class LeadsController {
       }
       else return 'no data matched'
     }
-    else if (
-      year !== '' && year !== undefined
-      && month !== '' && month !== undefined
-      && sub_market !== '' && sub_market !== undefined
-    )
-    {
-      const loca = sub_market.split(',');
-      const locaq = "'" + loca.join("','") + "'";
-      const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-      select * from alldata
-      where alldata.status not in ('notinterested')
-        and extract (YEAR FROM alldata.last_update_date) = '${year}'
-      and extract (month from alldata.last_update_date) = '${month}'
-      and alldata.submarket in (${locaq})
-      order by case alldata.probability
-      when 'Hot' then 1
-      when 'Warm' then 2
-      when 'Cold' then 3
-      end
-      limit 100
-      `);
-      // console.log(sql)
-      if (sql.length > 0) {
-        return sql
-      }
-      else return 'no data matched'
-    }
+
     else if (
       year !== '' && year !== undefined
       && month !== '' && month !== undefined
       && sale_propensity !== '' && sale_propensity !== undefined
+      && status !== '' && status !== undefined
     )
     {
+      console.log('year month salepropensity status');
+
       const loca = sale_propensity.split(',');
       const locaq = "'" + loca.join("','") + "'";
+      const statu = status.split(',');
+      const statuq = "'" + statu.join("','") + "'";
       const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-      select * from alldata
-      where alldata.status not in ('notinterested')
-      and extract (YEAR FROM alldata.last_update_date) = '${year}'
-      and extract (month from alldata.last_update_date) = '${month}'
-      and alldata.probability in (${locaq})
-      order by case alldata.probability
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+
+      extract (YEAR FROM tlg.last_update_date) = '${year}'
+      and extract (month from tlg.last_update_date) = '${month}'
+      and tlg.probability in (${locaq})
+      and tls.status in (${statuq})
+      order by case tlg.probability
       when 'Hot' then 1
       when 'Warm' then 2
       when 'Cold' then 3
       end
-      limit 100
+
       `);
       // console.log(sql)
       if (sql.length > 0) {
@@ -349,6 +370,41 @@ export class LeadsController {
     else if (
       year !== '' && year !== undefined
       && month !== '' && month !== undefined
+      && market !== '' && market !== undefined
+    )
+    {
+      console.log('year month market');
+
+      const loca = market.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+      where
+
+        extract (YEAR FROM tlg.last_update_date) = '${year}'
+      and extract (month from tlg.last_update_date) = '${month}'
+      and tlg.market in (${locaq})
+      order by case tlg.probability
+      when 'Hot' then 1
+      when 'Warm' then 2
+      when 'Cold' then 3
+      end
+
+      `);
+      // console.log(sql)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && status !== '' && status !== undefined
     )
     {
       // const sql1 = `select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg,
@@ -363,22 +419,63 @@ export class LeadsController {
       // when 'Cold' then 3
       // end
       // limit 100`;
+      console.log('year month status');
+
+      const statu = status.split(',');
+      const statuq = "'" + statu.join("','") + "'";
+
+
       const sql = await this.leadsRepository.dataSource.execute(`
-      with alldata as (select * from ${this.DB_SCHEMA}.tgt_lead_gen tlg
-        left outer join  (select *, row_number() over(partition by property_id order by inserted_date desc) as rn from ${this.DB_SCHEMA}.tgt_lead_status  )
-        tls on tlg.property_id =tls.property_id and tls.status not in ('notinterested')  and rn = 1  )
-        select * from alldata
-      where alldata.status not in ('notinterested')
-      and  extract (YEAR FROM alldata.last_update_date) = '${year}'
-      and extract (month from alldata.last_update_date) = '${month}'
-      order by case alldata.probability
-      when 'Hot' then 1
-      when 'Warm' then 2
-      when 'Cold' then 3
-      end
-      limit 100
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+       where
+       extract (YEAR FROM tlg.last_update_date) = '${year}'
+       and extract (month from tlg.last_update_date) = '${month}'
+       and tls.status in (${statuq})
+       order by case tlg.probability
+       when 'Hot' then 1
+       when 'Warm' then 2
+       when 'Cold' then 3
+       end
+
       `);
       // console.log(sql1)
+      if (sql.length > 0) {
+        return sql
+      }
+      else return 'no data matched'
+    }
+    else if (
+      year !== '' && year !== undefined
+      && month !== '' && month !== undefined
+      && sale_propensity !== '' && sale_propensity !== undefined
+    )
+    {
+      console.log('year month salepropensity');
+      const loca = sale_propensity.split(',');
+      const locaq = "'" + loca.join("','") + "'";
+
+
+      const sql = await this.leadsRepository.dataSource.execute(`
+      select *
+      from ${this.DB_SCHEMA}.tgt_lead_gen tlg
+      left outer join (select distinct on(property_id)property_id ,status ,inserted_date from ${this.DB_SCHEMA}.tgt_lead_status
+     order by property_id , inserted_date desc )
+       tls on tlg.property_id =tls.property_id
+       where
+       extract (YEAR FROM tlg.last_update_date) = '${year}'
+       and extract (month from tlg.last_update_date) = '${month}'
+       and tlg.probability in (${locaq})
+       order by case tlg.probability
+       when 'Hot' then 1
+       when 'Warm' then 2
+       when 'Cold' then 3
+       end
+      `);
+
       if (sql.length > 0) {
         return sql
       }
@@ -451,12 +548,12 @@ export class LeadsController {
     }
     else return 'please select a market '
   }
-  @get('/buyersmarket')
+  @get('/buyersmarketcheck')
   @response(200, {
     description: 'Array of BUyers model instances',
 
   })
-  async buyersmarket(
+  async buyersmarketcheck(
 
     // @param.query.string('market') market?: string,
   ): Promise<any> {
@@ -468,7 +565,18 @@ export class LeadsController {
       // const mar = market.split(',');
       // const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `select distinct market from ${this.DB_SCHEMA}.tgt_buyers_metrics order by market asc
+        `with alldata as (select *,
+           (
+            select *, row_number() over(partition by property_id order by inserted_date desc)
+            as rn from cre.tgt_lead_status
+          ) as "status" where rn = 1 ,
+          coalesce ((select jsonb_agg(row_to_json(f))
+          from (
+          select * from cre.tgt_lead_feedback order by updated_on desc
+          ) f where tlg.property_id = f.property_id
+          ),'[]') as "feedback"
+          from  cre.tgt_lead_gen tlg  )
+          select * from alldata limit 100
         `
       )
       return sql
