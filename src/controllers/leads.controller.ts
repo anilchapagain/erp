@@ -669,12 +669,12 @@ export class LeadsController {
     }
     else return 'please select a market '
   }
-  @get('/buyersmarketcheck')
+  @get('/buyersmarket')
   @response(200, {
     description: 'Array of BUyers model instances',
 
   })
-  async buyersmarketcheck(
+  async buyersmarket(
 
     // @param.query.string('market') market?: string,
   ): Promise<any> {
@@ -686,18 +686,7 @@ export class LeadsController {
       // const mar = market.split(',');
       // const marq = "'" + mar.join("','") + "'";
       const sql = await this.leadsRepository.execute(
-        `with alldata as (select *,
-           (
-            select *, row_number() over(partition by property_id order by inserted_date desc)
-            as rn from cre.tgt_lead_status
-          ) as "status" where rn = 1 ,
-          coalesce ((select jsonb_agg(row_to_json(f))
-          from (
-          select * from cre.tgt_lead_feedback order by updated_on desc
-          ) f where tlg.property_id = f.property_id
-          ),'[]') as "feedback"
-          from  cre.tgt_lead_gen tlg  )
-          select * from alldata limit 100
+        `select distinct market from ${this.DB_SCHEMA}.tgt_buyers_metrics order by market asc
         `
       )
       return sql
