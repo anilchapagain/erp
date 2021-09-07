@@ -45,6 +45,10 @@ export class User extends Entity {
   })
   agent_map_to: string;
   @property({
+    type: 'string',
+  })
+  role: String;
+  @property({
     type: 'date',
   })
   agent_map_date: Date;

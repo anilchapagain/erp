@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -17,9 +18,9 @@ import {FeedbackRepository} from '../repositories';
 export class FeedbackController {
   constructor(
     @repository(FeedbackRepository)
-    public feedbackRepository : FeedbackRepository,
-  ) {}
-
+    public feedbackRepository: FeedbackRepository,
+  ) { }
+  @authenticate("jwt")
   @post('/feedbacks')
   @response(200, {
     description: 'Feedback model instance',
@@ -51,7 +52,7 @@ export class FeedbackController {
   ): Promise<Count> {
     return this.feedbackRepository.count(where);
   }
-
+  @authenticate("jwt")
   @get('/feedbacks')
   @response(200, {
     description: 'Array of Feedback model instances',
@@ -88,6 +89,8 @@ export class FeedbackController {
   ): Promise<Count> {
     return this.feedbackRepository.updateAll(feedback, where);
   }
+
+  @authenticate("jwt")
   @get('/feedback/{property_id}')
   @response(200, {
     description: 'feedback model instance',
@@ -109,6 +112,8 @@ export class FeedbackController {
     return sql;
 
   }
+
+  @authenticate("jwt")
   @get('/feedbacks/{id}')
   @response(200, {
     description: 'Feedback model instance',

@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: { postgresql: { schema: process.env.DB_SCHEMA, table: 'tgt_lead_status'} }, })
+@model({settings: {postgresql: {schema: process.env.DB_SCHEMA, table: 'tgt_lead_status'}}, })
 export class Status extends Entity {
   @property({
     type: 'string',
@@ -28,6 +28,10 @@ export class Status extends Entity {
     required: true,
   })
   inserted_date: string;
+  @property({
+    type: 'date',
+  })
+  deal_value: string;
 
 
   constructor(data?: Partial<Status>) {

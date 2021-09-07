@@ -71,7 +71,8 @@ export class CReUserController {
   })
   async login(
     @requestBody() credentials: Credentials,
-  ): Promise<{token: string}> {
+  ): Promise<any> {
+    const data = {};
     // make sure user exist,password should be valid
     const user = await this.userService.verifyCredentials(credentials);
     // console.log(user);
@@ -79,7 +80,17 @@ export class CReUserController {
     // console.log(userProfile);
 
     const token = await this.jwtService.generateToken(userProfile);
-    return Promise.resolve({token: token})
+    // const generatedToken = Promise.resolve({token: token})
+    const userdata = await this.userRepository.execute(
+      `select * from cre.users u
+      left join cre.roles r on u."role" = r.id
+      where username = '${userProfile.name}'  `
+    );
+    delete userdata[0].password;
+
+    return {token, userdata};
+
+    // return Promise.resolve({token: token})
   }
 
 

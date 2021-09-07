@@ -5,3 +5,4 @@ export * from './user.repository';
 // export * from './session.repository';
 export * from './usersession.repository';
 
+export * from './roles.repository';

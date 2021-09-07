@@ -6,3 +6,4 @@ export * from './user.model';
 export * from './usersession.model';
 
 
+export * from './roles.model';
