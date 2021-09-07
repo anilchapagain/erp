@@ -6,3 +6,4 @@ export * from './user.repository';
 export * from './usersession.repository';
 
 export * from './roles.repository';
+export * from './notification.repository';

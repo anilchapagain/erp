@@ -1,5 +1,4 @@
 import {AuthenticationComponent, registerAuthenticationStrategy} from '@loopback/authentication';
-import {SECURITY_SCHEME_SPEC} from '@loopback/authentication-jwt';
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
@@ -36,7 +35,7 @@ export class CreaigithubApplication extends BootMixin(
     this.setupBinding();
 
     // Add security spec
-    this.addSecuritySpec();
+    // this.addSecuritySpec();
 
     this.component(AuthenticationComponent);
     registerAuthenticationStrategy(this, JWTStrategy)
@@ -93,22 +92,22 @@ export class CreaigithubApplication extends BootMixin(
     this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to(TokenServiceConstants.TOKEN_EXPIRES_IN_VALUE);
   }
 
-  addSecuritySpec(): void {
-    this.api({
-      openapi: '3.0.0',
-      info: {
-        title: 'test application',
-        version: '1.0.0',
-      },
-      paths: {},
-      components: {securitySchemes: SECURITY_SCHEME_SPEC},
-      security: [
-        {
-          // secure all endpoints with 'jwt'
-          jwt: [],
-        },
-      ],
-      servers: [{url: '/'}],
-    });
-  }
+  // addSecuritySpec(): void {
+  //   this.api({
+  //     openapi: '3.0.0',
+  //     info: {
+  //       title: 'test application',
+  //       version: '1.0.0',
+  //     },
+  //     paths: {},
+  //     components: {securitySchemes: SECURITY_SCHEME_SPEC},
+  //     security: [
+  //       {
+  //         // secure all endpoints with 'jwt'
+  //         jwt: [],
+  //       },
+  //     ],
+  //     servers: [{url: '/'}],
+  //   });
+  // }
 }
