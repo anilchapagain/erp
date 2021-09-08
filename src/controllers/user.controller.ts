@@ -1,11 +1,13 @@
 import {authenticate, AuthenticationBindings} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {repository} from '@loopback/repository';
-import {get, getJsonSchemaRef, post, requestBody} from '@loopback/rest';
+import {get, getJsonSchemaRef, getModelSchemaRef, param, patch, post, requestBody, response} from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
 import * as _ from 'lodash';
 import {PasswordHasherBindings, TokenServiceBindings, UserServiceBindings} from '../keys';
+import {Usersession} from '../models';
 import {User} from '../models/user.model';
+import {UsersessionRepository} from '../repositories';
 import {Credentials, UserRepository} from '../repositories/user.repository';
 import {validateCredentials} from '../services';
 import {BcryptHasher} from '../services/hash.password';
@@ -17,6 +19,8 @@ export class CReUserController {
   constructor(
     @repository(UserRepository)
     public userRepository: UserRepository,
+    @repository(UsersessionRepository)
+    public usersRepository: UsersessionRepository,
 
     // @inject('service.hasher')
     @inject(PasswordHasherBindings.PASSWORD_HASHER)
@@ -81,6 +85,14 @@ export class CReUserController {
 
     const token = await this.jwtService.generateToken(userProfile);
     // const generatedToken = Promise.resolve({token: token})
+    const session = await this.userRepository.execute(
+
+      `INSERT INTO cre.user_session
+      (name,  "session")
+      VALUES('${credentials.username}' ,'${token}') returning *;
+      `
+    )
+    console.log('done');
     const userdata = await this.userRepository.execute(
       `select * from cre.users u
       left join cre.roles r on u."role" = r.id
@@ -88,10 +100,31 @@ export class CReUserController {
     );
     delete userdata[0].password;
 
-    return {token, userdata};
+    return {token, userdata, session};
 
     // return Promise.resolve({token: token})
   }
+
+  @patch('/logout/{id}')
+  @response(204, {
+    description: 'Usersession PATCH success',
+  })
+  async updateById(
+    @param.path.string('id') id: string,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Usersession, {partial: true}),
+        },
+      },
+    })
+    usersession: Usersession,
+  ): Promise<void> {
+    await this.usersRepository.updateById(id, usersession);
+  }
+
+  // return Promise.resolve({token: token})
+
 
 
   @authenticate("jwt")

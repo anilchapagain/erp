@@ -57,6 +57,7 @@
     "@loopback/rest-explorer": "^3.2.0",
     "@loopback/security": "^0.5.2",
     "@loopback/service-proxy": "^3.1.0",
+    "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
     "dotenv-extended": "^2.9.0",
     "isemail": "^3.2.0",
