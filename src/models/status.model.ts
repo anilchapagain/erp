@@ -29,7 +29,7 @@ export class Status extends Entity {
   })
   inserted_date: string;
   @property({
-    type: 'date',
+    type: 'string',
   })
   deal_value: string;
 
