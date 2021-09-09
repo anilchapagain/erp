@@ -5051,6 +5051,7 @@ end
         else if (Error()) {
           throw new HttpErrors.InternalServerError();
         }
+        break;
       default:
         return 'Send the user details '
 
@@ -5062,8 +5063,102 @@ end
 
 
   }
+  @get('/buyers/{user}')
+  @response(200, {
+    description: 'Array of BUyers model instances',
+
+  })
+  async buyersuser(
+
+    @param.path.string('user') user: string,
+    @param.query.string('market') market?: string,
+  ): Promise<any> {
+    let u = user;
+
+    switch (u) {
+      case 'stashgeleszinski':
+        if (
+          market !== '' && market !== undefined
+        ) {
+
+          const mar = market.split(',');
+          const marq = "'" + mar.join("','") + "'";
+          const sql = await this.leadsRepository.execute(
+            `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where market in (${marq})
+            `
+          )
+          return sql
+        }
+        break;
+      case 'scottkoethe':
+        const scottkoethe = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where market in ('Omaha')
+            `
+        );
+        return scottkoethe;
+        break;
 
 
+      case 'carybelovicz':
+        const sql = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where market in ('Lansing - Ann Arbor','South Bend','Grand Rapids')
+              `
+        )
+        return sql
+        break;
+      case 'weskohler':
+        const weskohler = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where
+            market in ('Cincinnati','Dayton')
+                `
+        )
+        return weskohler;
+        break;
+      case 'daviddirkschneider':
+        const daviddirkschneider = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where
+              market in ('Tulsa','Oklahoma City')
+                  `
+        )
+        return daviddirkschneider;
+        break;
+      case 'reidbennett':
+        const reidbennett = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where
+                market in ('Chicago Suburban')
+                    `
+        )
+        return reidbennett;
+        break;
+      case 'seanhenry':
+        const seanhenry = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where
+                  market in ('Atlanta - Urban','Atlanta - Suburban')
+                      `
+        )
+        return seanhenry;
+        break;
+      case 'tomhuffsmith':
+        const tomhuffsmith = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where
+                    market in ('Orlando','Jacksonville','Tallahassee')
+                        `
+        )
+        return tomhuffsmith;
+        break;
+      case 'keontruth':
+        const keontruth = await this.leadsRepository.execute(
+          `select * from ${this.DB_SCHEMA}.tgt_buyers_metrics where
+                      market in ('Los Angeles - Metro','Los Angeles - Eastern County','Orange County','San Fernando Valley - Ventura County')
+                          `
+        )
+        return keontruth;
+        break;
+      default:
+        return 'NO market for users '
+
+    }
+  }
 }
 
 
