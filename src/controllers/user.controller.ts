@@ -35,7 +35,7 @@ export class CReUserController {
     public jwtService: JWTService,
 
   ) { }
-
+  DB_SCHEMA = process.env.DB_SCHEMA
   @post('/signup', {
     responses: {
       '200': {
@@ -87,15 +87,15 @@ export class CReUserController {
     // const generatedToken = Promise.resolve({token: token})
     const session = await this.userRepository.execute(
 
-      `INSERT INTO cre.user_session
+      `INSERT INTO ${this.DB_SCHEMA}.user_session
       (name,  "session")
       VALUES('${credentials.username}' ,'${token}') returning *;
       `
     )
     console.log('done');
     const userdata = await this.userRepository.execute(
-      `select * from cre.users u
-      left join cre.roles r on u."role" = r.id
+      `select * from ${this.DB_SCHEMA}.users u
+      left join ${this.DB_SCHEMA}.roles r on u."role" = r.id
       where username = '${userProfile.name}'  `
     );
     delete userdata[0].password;
