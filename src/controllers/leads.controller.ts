@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   repository
 } from '@loopback/repository';
@@ -8,7 +9,7 @@ import {
   response
 } from '@loopback/rest';
 import {LeadsRepository} from '../repositories';
-
+@authenticate("jwt")
 export class LeadsController {
   constructor(
     @repository(LeadsRepository)

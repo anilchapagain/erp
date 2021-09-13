@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -11,12 +12,12 @@ import {
 } from '@loopback/rest';
 import {Status} from '../models';
 import {StatusRepository} from '../repositories';
-
+@authenticate("jwt")
 export class StatusController {
   constructor(
     @repository(StatusRepository)
-    public statusRepository : StatusRepository,
-  ) {}
+    public statusRepository: StatusRepository,
+  ) { }
   DB_SCHEMA = process.env.DB_SCHEMA
   @post('/statuses')
   @response(200, {
@@ -29,13 +30,13 @@ export class StatusController {
         'application/json': {
           schema: getModelSchemaRef(Status, {
             title: 'NewStatus',
-            exclude:['id']
+            exclude: ['id']
 
           }),
         },
       },
     })
-    status: Omit<Status,'id'>
+    status: Omit<Status, 'id'>
   ): Promise<Status> {
     return this.statusRepository.create(status);
   }
@@ -152,7 +153,7 @@ export class StatusController {
 
   })
   async findreport(
-  ): Promise<any>{
+  ): Promise<any> {
     const sql = this.statusRepository.dataSource.execute(`
 
     select distinct status,count(distinct tt.property_id),sum(tlg.property_current_rent) from (

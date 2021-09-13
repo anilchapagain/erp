@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -13,7 +14,7 @@ import {
 } from '@loopback/rest';
 import {Feedback} from '../models';
 import {FeedbackRepository} from '../repositories';
-
+@authenticate("jwt")
 export class FeedbackController {
   constructor(
     @repository(FeedbackRepository)
