@@ -1,7 +1,8 @@
 import {TokenService, UserService} from '@loopback/authentication';
 import {BindingKey} from '@loopback/core';
 import {User} from './models/user.model';
-import {Credentials} from './repositories/user.repository';
+import {Credentials} from './repositories';
+// import {Credentials} from './repositories/user.repository';
 import {PasswordHasher} from './services/hash.password';
 
 export namespace TokenServiceConstants {

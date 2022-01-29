@@ -7,3 +7,5 @@ export * from './user.model';
 
 // export * from './roles.model';
 // export * from './notification.model';
+export * from './supercomp.model';
+export * from './consinee.model';

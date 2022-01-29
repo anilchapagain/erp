@@ -7,10 +7,12 @@ import * as _ from 'lodash';
 import {
   PasswordHasherBindings,
   TokenServiceBindings,
-  UserServiceBindings,
+  UserServiceBindings
 } from '../keys';
+import {Supercomp} from '../models';
 // import {Usersession} from '../models';
 import {User} from '../models/user.model';
+import {SupercompRepository} from '../repositories';
 // import {UsersessionRepository} from '../repositories';
 import {UserRepository} from '../repositories/user.repository';
 import {validateCredentials} from '../services';
@@ -21,7 +23,8 @@ import {MyUserService} from '../services/user-service';
 export class CReUserController {
   constructor(
     @repository(UserRepository)
-    public userRepository: UserRepository,
+    public userRepository: UserRepository, @repository(SupercompRepository)
+    public superrepo: SupercompRepository,
     // @repository(UsersessionRepository)
     // public usersRepository: UsersessionRepository,
 
@@ -36,22 +39,22 @@ export class CReUserController {
     // @inject('service.jwt.service')
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: JWTService,
-  ) {}
+  ) { }
   DB_SCHEMA = process.env.DB_SCHEMA;
   @post('/signup', {
     responses: {
       '200': {
         description: 'User',
         content: {
-          schema: getJsonSchemaRef(User),
+          schema: getJsonSchemaRef(Supercomp),
         },
       },
     },
   })
-  async signup(@requestBody() userData: User) {
+  async signup(@requestBody() userData: Supercomp) {
     validateCredentials(_.pick(userData, ['username', 'password']));
     userData.password = await this.hasher.hashPassword(userData.password);
-    const savedUser = await this.userRepository.create(userData);
+    const savedUser = await this.superrepo.create(userData);
     // delete savedUser.password;
     return savedUser;
   }

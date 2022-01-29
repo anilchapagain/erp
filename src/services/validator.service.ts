@@ -1,5 +1,5 @@
 import {HttpErrors} from '@loopback/rest';
-import {Credentials} from '../repositories/user.repository';
+import {Credentials} from '../repositories/supercomp.repository';
 
 export function validateCredentials(credentials: Credentials) {
   if (credentials.username.length < 8) {

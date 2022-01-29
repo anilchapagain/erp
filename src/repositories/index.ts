@@ -7,3 +7,5 @@ export * from './user.repository';
 
 // export * from './roles.repository';
 // export * from './notification.repository';
+export * from './supercomp.repository';
+export * from './consinee.repository';

@@ -8,3 +8,4 @@ export * from './user.controller';
 
 // export * from './roles.controller';
 // export * from './notification.controller';
+export * from './consinee.controller';
