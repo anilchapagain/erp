@@ -9,3 +9,4 @@ export * from './user.model';
 // export * from './notification.model';
 export * from './supercomp.model';
 export * from './consinee.model';
+export * from './erp-users.model';
