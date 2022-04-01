@@ -5,10 +5,10 @@ const config = {
   name: 'erp',
   connector: 'postgresql',
   url: '',
-  host: process.env.DB_HOST,
+  host: '127.0.0.1',
   port: 5432,
-  user: process.env.DB_USER,
-  password: '',
+  user: 'postgres',
+  password: 'admin',
   database: 'erp',
 };
 
