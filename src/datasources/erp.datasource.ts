@@ -5,11 +5,11 @@ const config = {
   name: 'erp',
   connector: 'postgresql',
   url: '',
-  host: '127.0.0.1',
+  host: 'uenicsrds.caorfm9oc37a.ap-south-1.rds.amazonaws.com',
   port: 5432,
-  user: 'postgres',
-  password: 'admin',
-  database: 'erp',
+  user: 'uenicsadmin',
+  password: 'uenicsadmin',
+  database: 'uenicsdb',
 };
 
 // Observe application's life cycle to disconnect the datasource when
