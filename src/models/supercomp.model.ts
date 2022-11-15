@@ -1,12 +1,12 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {postgresql: {table: 'super_comp'}}, })
+@model({settings: {postgresql: {table: 'super_comp'}}})
 export class Supercomp extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -27,6 +27,10 @@ export class Supercomp extends Entity {
     type: 'string',
   })
   db_name?: string;
+  @property({
+    type: 'string',
+  })
+  admin?: string;
 
   @property({
     type: 'string',
@@ -51,7 +55,6 @@ export class Supercomp extends Entity {
     type: 'boolean',
   })
   active?: boolean;
-
 
   constructor(data?: Partial<Supercomp>) {
     super(data);

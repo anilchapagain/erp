@@ -4,10 +4,10 @@ import {ErpDataSource} from '../datasources';
 // import {CreDataSource} from '../datasources';
 import {User, UserRelations} from '../models/user.model';
 
-// export type Credentials = {
-//   username: string;
-//   password: string;
-// };
+export type Credentials = {
+  username: string;
+  password: string;
+};
 
 export class UserRepository extends DefaultCrudRepository<
   User,

@@ -1,7 +1,7 @@
 import {TokenService, UserService} from '@loopback/authentication';
 import {BindingKey} from '@loopback/core';
 import {User} from './models/user.model';
-import {Credentials} from './repositories';
+import {Credentials} from './repositories/user.repository';
 // import {Credentials} from './repositories/user.repository';
 import {PasswordHasher} from './services/hash.password';
 
@@ -23,9 +23,8 @@ export namespace TokenServiceBindings {
 }
 
 export namespace PasswordHasherBindings {
-  export const PASSWORD_HASHER = BindingKey.create<PasswordHasher>(
-    'services.hasher',
-  );
+  export const PASSWORD_HASHER =
+    BindingKey.create<PasswordHasher>('services.hasher');
   export const ROUNDS = BindingKey.create<number>('services.hasher.rounds');
 }
 

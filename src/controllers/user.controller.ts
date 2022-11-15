@@ -7,15 +7,15 @@ import * as _ from 'lodash';
 import {
   PasswordHasherBindings,
   TokenServiceBindings,
-  UserServiceBindings
+  UserServiceBindings,
 } from '../keys';
 import {Supercomp} from '../models';
 // import {Usersession} from '../models';
 import {User} from '../models/user.model';
-import {Credentials, SupercompRepository} from '../repositories';
 import {ErpUsersRepository} from '../repositories/erp-users.repository';
+import {SupercompRepository} from '../repositories/supercomp.repository';
 // import {UsersessionRepository} from '../repositories';
-import {UserRepository} from '../repositories/user.repository';
+import {Credentials, UserRepository} from '../repositories/user.repository';
 import {validateCredentials} from '../services';
 import {BcryptHasher} from '../services/hash.password';
 import {JWTService} from '../services/jwt-service';
@@ -24,7 +24,8 @@ import {MyUserService} from '../services/user-service';
 export class CReUserController {
   constructor(
     @repository(UserRepository)
-    public userRepository: UserRepository, @repository(SupercompRepository)
+    public userRepository: UserRepository,
+    @repository(SupercompRepository)
     public superrepo: SupercompRepository,
     @repository(ErpUsersRepository)
     public users: ErpUsersRepository,
@@ -43,7 +44,7 @@ export class CReUserController {
     // @inject('service.jwt.service')
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: JWTService,
-  ) { }
+  ) {}
   DB_SCHEMA = [];
   @post('/signup', {
     responses: {
@@ -107,7 +108,7 @@ VALUES('${userData.username}', '${userData.password}');
     console.log('done');
     const userdata = await this.userRepository.execute(
       `select * from public.super_comp u
-      where username = '${userProfile.name}'  `
+      where username = '${userProfile.name}'  `,
     );
     delete userdata[0].password;
 
